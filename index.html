@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>فرم شخصی متین</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.cdnfonts.com/s/14965/BNAZANIN.woff" rel="stylesheet">
+  <style>
+    body, select, option, input, textarea, button, label {
+      font-family: 'B Nazanin', sans-serif !important;
+    }
+    select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      padding-right: 1.5rem;
+    }
+    select option {
+      font-family: 'B Nazanin', sans-serif !important;
+      direction: rtl;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 min-h-screen flex items-center justify-center p-2.5 md:p-0">
+  <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+    <h1 class="text-2xl font-bold text-center text-gray-800 mb-2">فرم شخصی متین</h1>
+    <p class="text-center text-gray-600 mb-5">اینجا هر چی بخوام رو ثبت می‌کنم</p>
+
+    <!-- پیام موفقیت -->
+    <div id="successMessage" class="hidden bg-green-100 text-green-800 text-center p-3 mb-4 rounded-lg">
+      ✅ اطلاعات با موفقیت ثبت شد!
+    </div>
+
+    <form id="personalForm">
+      <div class="mb-3">
+        <label for="concern" class="block text-gray-700 font-bold mb-1">الان چی دغدغه‌مه؟</label>
+        <input type="text" id="concern" name="concern" 
+               class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" 
+               placeholder="دغدغه‌ات رو بنویس...">
+      </div>
+
+      <div class="mb-3">
+        <label for="category" class="block text-gray-700 font-bold mb-1">دسته‌بندی‌هام</label>
+        <select id="category" name="category" 
+                class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 appearance-none" 
+                style="direction: rtl;">
+          <option value="" disabled selected>یک دسته‌بندی انتخاب کن</option>
+          <option value="اهداف">اهداف</option>
+          <option value="ارزش‌ها">ارزش‌ها</option>
+          <option value="سوالات بزرگ">سوالات بزرگ</option>
+          <option value="ایده‌ها">ایده‌ها</option>
+          <option value="شاخص‌ها برای ارتباطات">شاخص‌ها برای ارتباطات</option>
+          <option value="مهارت‌ها">مهارت‌ها</option>
+          <option value="روانشناسی">روانشناسی</option>
+          <option value="کتاب‌ها">کتاب‌ها</option>
+          <option value="دوره‌ها">دوره‌ها</option>
+          <option value="موزیک‌ها">موزیک‌ها</option>
+          <option value="فیلم و سریال‌ها">فیلم و سریال‌ها</option>
+          <option value="لیست ویدیوهای یوتوب">لیست ویدیوهای یوتوب</option>
+          <option value="سفرهایی که دوست دارم برم">سفرهایی که دوست دارم برم</option>
+          <option value="جاهایی که دوست دارم برم">جاهایی که دوست دارم برم</option>
+          <option value="چیزهایی که دوست دارم داشته باشم">چیزهایی که دوست دارم داشته باشم</option>
+          <option value="تفریحات مورد علاقه‌م">تفریحات مورد علاقه‌م</option>
+          <option value="محتواهای جذاب">محتواهای جذاب</option>
+        </select>
+      </div>
+
+      <!-- لینک بالای توضیحات -->
+      <div class="mb-3">
+        <label for="link" class="block text-gray-700 font-bold mb-1">لینک</label>
+        <input type="url" id="link" name="link" 
+               class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" 
+               placeholder="اگر لینکی داشتی اینجا بذار.">
+      </div>
+
+      <div class="mb-3">
+        <label for="details" class="block text-gray-700 font-bold mb-1">توضیحات</label>
+        <textarea id="details" name="details" rows="5" 
+                  class="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" 
+                  placeholder="هر چی تو ذهنته بنویس..."></textarea>
+      </div>
+
+      <button type="submit" 
+              class="w-full bg-purple-600 text-white p-2 rounded-lg hover:bg-purple-700 transition-colors">
+        ثبت
+      </button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('personalForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+      const rawData = Object.fromEntries(formData.entries());
+
+      // کلیدها فارسی شدن
+      const data = {
+        "دغدغه": rawData.concern || "",
+        "دسته‌بندی": rawData.category || "",
+        "لینک": rawData.link || "",
+        "توضیحات": rawData.details || ""
+      };
+
+      const webhookUrl = 'https://app-n8n-gd0e6.apps.teh2.abrhapaas.com/webhook-test/Matin';
+
+      fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+      .then(response => {
+        if (response.ok) {
+          const msg = document.getElementById('successMessage');
+          msg.classList.remove('hidden');
+          setTimeout(() => msg.classList.add('hidden'), 4000);
+          this.reset();
+        } else {
+          alert('❌ خطا در ارسال داده‌ها');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('❌ خطا در اتصال به webhook');
+      });
+    });
+  </script>
+</body>
+</html>
